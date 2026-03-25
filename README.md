@@ -14,15 +14,8 @@
 
 ## How to run
 
-```bash
-# Step 1 — install Flask
-pip install flask
+https://email-header-analyzer-4snb.onrender.com
 
-# Step 2 — run the app
-python app.py
-
-# Step 3 — open browser
-http://127.0.0.1:5000
 ```
 
 ## Skills demonstrated

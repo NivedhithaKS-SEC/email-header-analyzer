@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Header Analyzer — Nivedhitha KS</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: #1e2d45;
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --red: #ff4757;
+  --yellow: #ffd32a;
+  --green: #2ed573;
+  --gray: #64748b;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(0,229,255,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.04) 0%, transparent 50%);
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(17,24,39,0.8);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text { font-family: var(--mono); font-size: 14px; font-weight: 700; letter-spacing: 0.05em; }
+.logo-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.header-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  border: 1px solid rgba(0,229,255,0.3);
+  padding: 4px 10px;
+  border-radius: 100px;
+  letter-spacing: 0.1em;
+}
+
+/* ── MAIN LAYOUT ── */
+main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+.hero {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.hero h1 {
+  font-family: var(--mono);
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 30%, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+.hero p {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── INPUT AREA ── */
+.input-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.input-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.toolbar-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex: 1;
+}
+.sample-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  letter-spacing: 0.05em;
+}
+.sample-btn.phishing {
+  color: var(--red);
+  border-color: rgba(255,71,87,0.4);
+}
+.sample-btn.phishing:hover {
+  background: rgba(255,71,87,0.1);
+}
+.sample-btn.legit {
+  color: var(--green);
+  border-color: rgba(46,213,115,0.4);
+}
+.sample-btn.legit:hover {
+  background: rgba(46,213,115,0.1);
+}
+.clear-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.clear-btn:hover { color: var(--text); border-color: var(--gray); }
+
+textarea {
+  width: 100%;
+  min-height: 200px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 20px;
+  resize: vertical;
+  outline: none;
+}
+textarea::placeholder { color: var(--muted); }
+
+.analyze-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  border: none;
+  color: #0a0e17;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.analyze-btn:hover { filter: brightness(1.1); }
+.analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── RESULTS ── */
+#results { display: none; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* Risk banner */
+.risk-banner {
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.risk-banner.red   { background: rgba(255,71,87,0.08);  border-color: rgba(255,71,87,0.3); }
+.risk-banner.yellow{ background: rgba(255,211,42,0.08); border-color: rgba(255,211,42,0.3);}
+.risk-banner.green { background: rgba(46,213,115,0.08); border-color: rgba(46,213,115,0.3);}
+.risk-score-circle {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: var(--mono);
+  flex-shrink: 0;
+  border: 3px solid;
+}
+.risk-score-circle.red    { border-color: var(--red);    color: var(--red); }
+.risk-score-circle.yellow { border-color: var(--yellow); color: var(--yellow); }
+.risk-score-circle.green  { border-color: var(--green);  color: var(--green); }
+.risk-num { font-size: 22px; font-weight: 700; line-height: 1; }
+.risk-label { font-size: 9px; letter-spacing: 0.1em; opacity: 0.8; }
+.risk-verdict { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.risk-sub { font-size: 13px; color: var(--muted); }
+
+/* Grid */
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+@media(max-width:700px){ .results-grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.card-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.card-body { padding: 18px; }
+
+/* Auth results */
+.auth-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.auth-row:last-child { border-bottom: none; }
+.auth-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  min-width: 52px;
+  text-align: center;
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+}
+.auth-badge.pass   { background: rgba(46,213,115,0.15); color: var(--green); border: 1px solid rgba(46,213,115,0.3); }
+.auth-badge.fail   { background: rgba(255,71,87,0.15);  color: var(--red);   border: 1px solid rgba(255,71,87,0.3); }
+.auth-badge.none   { background: rgba(100,116,139,0.15);color: var(--gray);  border: 1px solid rgba(100,116,139,0.3);}
+.auth-badge.softfail{ background: rgba(255,211,42,0.15);color: var(--yellow);border: 1px solid rgba(255,211,42,0.3);}
+.auth-name { font-family: var(--mono); font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.auth-detail { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* Fields */
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.field-row:last-child { border-bottom: none; }
+.field-key { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.field-val { font-size: 13px; color: var(--text); word-break: break-all; }
+
+/* Threat indicators */
+.threat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.threat-item:last-child { border-bottom: none; }
+.threat-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.threat-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.threat-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.threat-title.detected { color: var(--red); }
+.threat-title.clean { color: var(--green); }
+
+/* Hops */
+.hop-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.hop-item:last-child { border-bottom: none; }
+.hop-num { font-family: var(--mono); font-size: 10px; color: var(--accent); margin-bottom: 4px; }
+.hop-raw { font-family: var(--mono); font-size: 10px; color: var(--muted); word-break: break-all; line-height: 1.5; }
+.hop-ip { font-family: var(--mono); font-size: 11px; color: var(--yellow); margin-top: 4px; }
+
+/* Flags list */
+.flags-list { list-style: none; }
+.flags-list li {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.flags-list li:last-child { border-bottom: none; }
+.flags-list li::before { content: '▸'; color: var(--red); flex-shrink: 0; }
+.flags-list.empty li { color: var(--green); }
+.flags-list.empty li::before { content: '✓'; color: var(--green); }
+
+/* Loading */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.loading.active { display: block; }
+.spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+footer {
+  text-align: center;
+  padding: 40px 24px 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">🔍</div>
+  <div>
+    <div class="logo-text">EMAIL HEADER ANALYZER</div>
+    <div class="logo-sub">Phishing & Spoofing Detection Tool</div>
+  </div>
+  <div class="header-badge">PORTFOLIO PROJECT</div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Detect Phishing.<br>Expose Spoofing.</h1>
+    <p>Paste raw email headers to analyze SPF, DKIM, DMARC authentication, detect spoofing indicators, and calculate a phishing risk score.</p>
+  </div>
+
+  <div class="input-card">
+    <div class="input-toolbar">
+      <span class="toolbar-label">📋 Paste raw email headers below</span>
+      <button class="sample-btn phishing" onclick="loadSample('phishing')">Load phishing sample</button>
+      <button class="sample-btn legit" onclick="loadSample('legit')">Load legit sample</button>
+      <button class="clear-btn" onclick="clearAll()">Clear</button>
+    </div>
+    <textarea id="headerInput" placeholder="Received: from mail.example.com ([192.168.1.1])&#10;From: sender@example.com&#10;Authentication-Results: ...&#10;&#10;Paste your full raw email headers here..."></textarea>
+    <button class="analyze-btn" id="analyzeBtn" onclick="analyzeHeaders()">▶ ANALYZE HEADERS</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    Analyzing headers...
+  </div>
+
+  <div id="results">
+    <!-- Risk banner -->
+    <div class="risk-banner" id="riskBanner">
+      <div class="risk-score-circle" id="riskCircle">
+        <span class="risk-num" id="riskNum">0</span>
+        <span class="risk-label">RISK</span>
+      </div>
+      <div>
+        <div class="risk-verdict" id="riskVerdict"></div>
+        <div class="risk-sub" id="riskSub"></div>
+      </div>
+    </div>
+
+    <div class="results-grid">
+      <!-- Auth results -->
+      <div class="card">
+        <div class="card-header"><div class="card-dot"></div>Authentication Results</div>
+        <div class="card-body" id="authResults"></div>
+      </div>
+
+      <!-- Email fields -->
+      <div class="card">
+        <div class="card-header"><div class="card-dot"></div>Email Fields</div>
+        <div class="card-body" id="emailFields"></div>
+      </div>
+
+      <!-- Threat indicators -->
+      <div class="card">
+        <div class="card-header"><div class="card-dot"></div>Threat Indicators</div>
+        <div class="card-body" id="threatIndicators"></div>
+      </div>
+
+      <!-- Risk flags -->
+      <div class="card">
+        <div class="card-header"><div class="card-dot"></div>Risk Scoring Flags</div>
+        <div class="card-body" id="riskFlags"></div>
+      </div>
+    </div>
+
+    <!-- Hops — full width -->
+    <div class="card">
+      <div class="card-header"><div class="card-dot"></div>Mail Routing Hops</div>
+      <div class="card-body" id="hopsSection"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Built by Nivedhitha KS &nbsp;·&nbsp; Cybersecurity Portfolio &nbsp;·&nbsp; github.com/NivedhithaKS-SEC
+</footer>
+
+<script>
+async function loadSample(kind) {
+  const r = await fetch(`/sample/${kind}`);
+  const d = await r.json();
+  document.getElementById('headerInput').value = d.headers;
+}
+
+function clearAll() {
+  document.getElementById('headerInput').value = '';
+  document.getElementById('results').style.display = 'none';
+}
+
+function colorClass(color) {
+  const map = {green:'pass', red:'fail', yellow:'softfail', gray:'none'};
+  return map[color] || 'none';
+}
+
+async function analyzeHeaders() {
+  const raw = document.getElementById('headerInput').value.trim();
+  if (!raw) { alert('Please paste email headers first.'); return; }
+
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('analyzeBtn').disabled = true;
+
+  try {
+    const r = await fetch('/analyze', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({headers: raw})
+    });
+    const d = await r.json();
+    if (d.error) { alert('Error: ' + d.error); return; }
+    renderResults(d);
+  } catch(e) {
+    alert('Failed to connect to server. Make sure Flask is running.');
+  } finally {
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('analyzeBtn').disabled = false;
+  }
+}
+
+function renderResults(d) {
+  const risk = d.risk;
+  // Banner
+  const banner = document.getElementById('riskBanner');
+  banner.className = `risk-banner ${risk.verdict_color}`;
+  const circle = document.getElementById('riskCircle');
+  circle.className = `risk-score-circle ${risk.verdict_color}`;
+  document.getElementById('riskNum').textContent = risk.score;
+  document.getElementById('riskVerdict').textContent = risk.verdict;
+  document.getElementById('riskSub').textContent = `${risk.flags.length} risk factor${risk.flags.length !== 1 ? 's' : ''} detected`;
+
+  // Auth
+  const auth = d.authentication;
+  const authEl = document.getElementById('authResults');
+  authEl.innerHTML = ['spf','dkim','dmarc'].map(key => {
+    const a = auth[key];
+    return `<div class="auth-row">
+      <div>
+        <div class="auth-badge ${colorClass(a.color)}">${a.status.toUpperCase()}</div>
+      </div>
+      <div>
+        <div class="auth-name">${key.toUpperCase()}</div>
+        <div class="auth-detail">${a.detail}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Fields
+  const fields = d.fields;
+  const fieldsEl = document.getElementById('emailFields');
+  const fieldMap = [
+    ['From', fields.from], ['To', fields.to], ['Subject', fields.subject],
+    ['Date', fields.date], ['Reply-To', fields.reply_to], ['X-Mailer', fields.x_mailer]
+  ];
+  fieldsEl.innerHTML = fieldMap.filter(([,v]) => v).map(([k,v]) =>
+    `<div class="field-row">
+      <span class="field-key">${k}</span>
+      <span class="field-val">${v}</span>
+    </div>`
+  ).join('');
+
+  // Threats
+  const ti = d.threat_indicators;
+  const threatEl = document.getElementById('threatIndicators');
+  let threats = '';
+  threats += buildThreat('Reply-To Mismatch', ti.reply_to_mismatch.detected,
+    ti.reply_to_mismatch.detail || 'Reply-To and From domains match');
+  threats += buildThreat('Display Name Spoofing', ti.display_name_spoof.detected,
+    ti.display_name_spoof.detail || 'No display name spoofing detected');
+  const uw = ti.urgency_words;
+  threats += buildThreat('Urgency Language', uw.length > 0,
+    uw.length > 0 ? `Found: ${uw.slice(0,4).join(', ')}` : 'No urgency language detected');
+  threatEl.innerHTML = threats;
+
+  // Flags
+  const flagsEl = document.getElementById('riskFlags');
+  if (risk.flags.length === 0) {
+    flagsEl.innerHTML = `<ul class="flags-list empty"><li>No risk flags detected</li></ul>`;
+  } else {
+    flagsEl.innerHTML = `<ul class="flags-list">${risk.flags.map(f => `<li>${f}</li>`).join('')}</ul>`;
+  }
+
+  // Hops
+  const hopsEl = document.getElementById('hopsSection');
+  if (!d.hops || d.hops.length === 0) {
+    hopsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">No Received headers found.</p>';
+  } else {
+    hopsEl.innerHTML = d.hops.map((h,i) =>
+      `<div class="hop-item">
+        <div class="hop-num">HOP ${i+1}</div>
+        <div class="hop-raw">${h.raw}</div>
+        ${h.ip ? `<div class="hop-ip">IP: ${h.ip}${h.by ? ' → via ' + h.by : ''}</div>` : ''}
+      </div>`
+    ).join('');
+  }
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function buildThreat(name, detected, detail) {
+  return `<div class="threat-item">
+    <div class="threat-icon">${detected ? '⚠️' : '✅'}</div>
+    <div>
+      <div class="threat-title ${detected ? 'detected' : 'clean'}">${name}</div>
+      <div class="threat-text">${detail}</div>
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>

@@ -12,9 +12,7 @@
 - Mail routing hop analysis
 - Risk score 0–100 with verdict
 
-## How to run
-
-https://email-header-analyzer-4snb.onrender.com
+Live demo: https://email-header-analyzer-4snb.onrender.com
 
 ```
 
